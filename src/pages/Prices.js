@@ -32,7 +32,7 @@ function Prices() {
   const handleAddClick = () => {
     if (debouncedValue.trim() === '') return;
     if (stocks.includes(debouncedValue.toUpperCase())) return;
-    setStocks([...stocks, debouncedValue.toUpperCase()]);
+    setStocks([debouncedValue.toUpperCase(), ...stocks]);
     setStock("");
     setDebouncedValue("");
     setShowInput(false); 
