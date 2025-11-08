@@ -1,0 +1,8 @@
+.error-box {
+  background-color: #fee2e2; /* similar to bg-red-100 */
+  border: 1px solid #fecaca; /* similar to border-red-200 */
+  color: #b91c1c; /* similar to text-red-700 */
+  padding: 12px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
