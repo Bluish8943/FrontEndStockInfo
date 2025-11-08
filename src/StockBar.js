@@ -16,17 +16,16 @@ function StockBar({sym,stocks,setStocks}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-      const baseURL = process.env.NODE_ENV === 'production'
-        ? '' 
-        : 'http://localhost:5000'; 
+        const baseURL = process.env.NODE_ENV === 'production'
+        ? 'https://backendstockinfo.onrender.com' 
+        : 'http://localhost:5000';    
 
-      const resHis = await fetch(`${baseURL}/api/fetchStock?symbol=${sym}`);
-      const jsonHis = await resHis.json();
-      setData(jsonHis);
-
-      const resIntra = await fetch(`${baseURL}/api/fetch15MinStock?symbol=${sym}`);
-      const jsonIntra = await resIntra.json();
-      setLiveData(jsonIntra);
+        const resHis = await fetch(`https://backendstockinfo.onrender.com/api/fetchStock?symbol=${sym}`);
+        const jsonHis = await resHis.json();
+        setData(jsonHis);
+        const resIntra = await fetch(`https://backendstockinfo.onrender.com/api/fetch15MinStock?symbol=${sym}`);
+        const jsonIntra = await resIntra.json();
+        setLiveData(jsonIntra);
       } catch (err) {
         console.error(err);
         setShowError(true);
