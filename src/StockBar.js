@@ -160,7 +160,7 @@ function StockBar({sym,stocks,setStocks}) {
         <div>
           Open: ${firstDataPoint}
           <br />
-          Previous Close: {prevClose}
+          Previous Close: ${prevClose}
         </div>
         <div style={{marginLeft: "20px"}}>
           Low: ${minLow}
