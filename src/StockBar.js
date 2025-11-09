@@ -37,7 +37,6 @@ function StockBar({sym,stocks,setStocks}) {
       clearInterval(countdown);
     };
   }, [sym]);
-
   const symbol = data?.["Meta Data"]?.["2. Symbol"];
   const timeSeries = data?.["Time Series (Daily)"];
   const invalidData = !symbol || !timeSeries;
@@ -62,7 +61,7 @@ function StockBar({sym,stocks,setStocks}) {
     );
   }
   if (!timeSeries) return null;
-  const chartData = Object.entries(timeSeries)
+  const chartData = Object.entries(timeSeries ?? {})
   .map(([timestamp, values]) => {
     return {
       time: timestamp, 
@@ -74,33 +73,32 @@ function StockBar({sym,stocks,setStocks}) {
 
   const prevClose = chartData.at(-1).close
   const timeSeries15Min = liveData['Time Series (5min)'];
-  const now = new Date();
+  let date = new Date();
+  const day = date.getDay(); 
+  if (day === 6) date.setDate(date.getDate() - 1); 
+  else if (day === 0) date.setDate(date.getDate() - 2); 
+  const centralToday = new Date(date.setHours(0, 0, 0, 0)); 
 
-  const centralToday = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Chicago" })
-  );
+const chartData15Min = Object.entries(timeSeries15Min ?? {})
+  .map(([timestamp, values]) => {
+    const [datePart, timePart] = timestamp.split(" ");
+    const isoString = `${datePart}T${timePart}`;
+    const easternDate = new Date(`${isoString}Z`);
+    const utcMillis = easternDate.getTime();
+    const centralMillis = utcMillis - 60 * 60 * 1000; 
+    const centralDate = new Date(centralMillis);
+    return {
+      time: centralDate,
+      open: Number(parseFloat(values["1. open"]).toFixed(2)),
+      high: Number(parseFloat(values["2. high"]).toFixed(2)),
+      low: Number(parseFloat(values["3. low"]).toFixed(2)),
+      close: Number(parseFloat(values["4. close"]).toFixed(2)),
+      volume: Number(values["5. volume"]),
+    };
+  })
+  .filter(d => d.time >= centralToday)
+  .reverse();
   
-  centralToday.setHours(0, 0, 0, 0); 
-  const chartData15Min = Object.entries(timeSeries15Min)
-    .map(([timestamp, values]) => {
-      const [datePart, timePart] = timestamp.split(" ");
-      const isoString = `${datePart}T${timePart}`;
-      const easternDate = new Date(`${isoString}Z`);
-      const utcMillis = easternDate.getTime();
-      const centralMillis = utcMillis - 60 * 60 * 1000; 
-      const centralDate = new Date(centralMillis);
-      return {
-        time: centralDate,
-        open: Number(parseFloat(values["1. open"]).toFixed(2)),
-        high: Number(parseFloat(values["2. high"]).toFixed(2)),
-        low: Number(parseFloat(values["3. low"]).toFixed(2)),
-        close: Number(parseFloat(values["4. close"]).toFixed(2)),
-        volume: Number(values["5. volume"]),
-      };
-    })
-    .filter(d => d.time >= centralToday)
-    .reverse();
-
   const totalVolume = chartData15Min.reduce((sum, d) => sum + d.volume, 0);
   const firstDataPoint = chartData15Min.at(0).open;
   const lastDataPoint = chartData15Min.at(-1).close;
