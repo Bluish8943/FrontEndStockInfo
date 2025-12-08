@@ -1,8 +1,67 @@
 .error-box {
-  background-color: #fee2e2; /* similar to bg-red-100 */
-  border: 1px solid #fecaca; /* similar to border-red-200 */
-  color: #b91c1c; /* similar to text-red-700 */
+  background-color: #fee2e2; 
+  border: 1px solid #fecaca; 
+  color: #b91c1c; 
   padding: 12px;
   border-radius: 6px;
   margin: 10px 0;
+}
+.chart-container {
+  position: relative;
+  padding-bottom: 25px;
+  border: 2px solid #111;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: transform 0.2s;
+}
+
+.top-button-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+  padding-right: 10px;
+}
+
+.under-chart-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: -45px;
+  padding-left: 10px;
+}
+
+.delete-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  padding-right: 10px;
+}
+
+.stats-row {
+  display: flex;
+  padding-left: 10px;
+  gap: 20px;
+}
+
+.local-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: auto; 
+}
+
+.local-popup {
+  background: #1E1E1E;
+  padding: 20px;
+  border-radius: 15px;
+  z-index: 21;
+  min-width: 200px;
 }

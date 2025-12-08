@@ -9,10 +9,11 @@ import React, { useEffect, useState } from 'react';
 function Prices() {
   const [showInput, setShowInput] = useState(false);
   const [stock, setStock] = useState(""); 
-  const [stocks, setStocks] = useState(['IBM','DIS','NVDA']); 
+  const [stocks, setStocks] = useState(['IBM']); 
   const [debouncedValue, setDebouncedValue] = useState('');
   const [sideBar, setSideBar] = useState(false);
 
+  
   const openSideBar = () => {
     setSideBar(!sideBar)
   }
@@ -73,7 +74,7 @@ function Prices() {
         )}
         <main className='main' style={{}}>
           {stocks.map((stock) => (
-            <StockBar key={stock} sym={stock} stocks={stocks} setStocks={setStocks} />
+            <StockBar key={stock} sym={stock} stocks={stocks} setStocks={setStocks}/>
           ))}
         </main>
       </div>
