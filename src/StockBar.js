@@ -67,39 +67,68 @@ function StockBar({sym,stocks,setStocks}) {
   const timeSeries15Min = liveData['Time Series (5min)'];
   const now = new Date();
 
-  const centralToday = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Chicago" })
-  );
-  
-  centralToday.setHours(0, 0, 0, 0); 
-  const chartData15Min = Object.entries(timeSeries15Min)
-    .map(([timestamp, values]) => {
-      const [datePart, timePart] = timestamp.split(" ");
-      const isoString = `${datePart}T${timePart}`;
-      const easternDate = new Date(`${isoString}Z`);
-      const utcMillis = easternDate.getTime();
-      const centralMillis = utcMillis - 60 * 60 * 1000; 
-      const centralDate = new Date(centralMillis);
-      return {
-        time: centralDate,
-        open: Number(parseFloat(values["1. open"]).toFixed(2)),
-        high: Number(parseFloat(values["2. high"]).toFixed(2)),
-        low: Number(parseFloat(values["3. low"]).toFixed(2)),
-        close: Number(parseFloat(values["4. close"]).toFixed(2)),
-        volume: Number(values["5. volume"]),
-      };
-    })
-    .filter(d => d.time >= centralToday)
-    .reverse();
 
-  const totalVolume = chartData15Min.reduce((sum, d) => sum + d.volume, 0);
-  const firstDataPoint = chartData15Min.at(0).open;
-  const lastDataPoint = chartData15Min.at(-1).close;
-  const minLow = Math.min(...chartData15Min.map(d => d.close));
-  const maxHigh = Math.max(...chartData15Min.map(d => d.close));
-  const change = (lastDataPoint - prevClose).toFixed(2);
-  const pChange = (((lastDataPoint - prevClose)/prevClose) * 100).toFixed(2);
-  const header = symbol + " - $" + lastDataPoint
+  const centralNow = new Date(
+  now.toLocaleString("en-US", { timeZone: "America/Chicago" })
+  );
+
+  const centralToday = new Date(centralNow);
+  centralToday.setHours(0, 0, 0, 0);
+
+
+  const marketOpen = new Date(centralToday);
+  marketOpen.setHours(8, 30, 0, 0);
+  const chartData15Min = Object.entries(timeSeries15Min)
+  .map(([timestamp, values]) => {
+    const centralDate = new Date(timestamp.replace(' ', 'T') + '-05:00');
+    
+
+    console.log(centralDate);
+    console.log(Number(values["4. close"]));
+    return {
+      time: centralDate.getTime(),
+      open: Number(values["1. open"]),
+      high: Number(values["2. high"]),
+      low: Number(values["3. low"]),
+      close: Number(values["4. close"]),
+      volume: Number(values["5. volume"]),
+    };
+  })
+  .filter(d => d.time >= marketOpen)
+  .reverse();
+    
+  let totalVolume;
+  let firstDataPoint;
+  let lastDataPoint;
+  let minLow;
+  let maxHigh;
+  let change;
+  let pChange;
+  let header;
+
+  if (chartData15Min.length === 0) {
+
+    totalVolume = 0;
+    firstDataPoint = 0;
+    lastDataPoint = 0;
+    minLow = 0;
+    maxHigh = 0;
+    change = 0;
+    pChange = 0;
+    header = symbol;
+
+  } else {
+
+    totalVolume = chartData15Min.reduce((sum, d) => sum + d.volume, 0);
+    firstDataPoint = chartData15Min.at(0).open;
+    lastDataPoint = chartData15Min.at(-1).close;
+    minLow = Math.min(...chartData15Min.map(d => d.close));
+    maxHigh = Math.max(...chartData15Min.map(d => d.close));
+    change = (lastDataPoint - prevClose).toFixed(2);
+    pChange = (((lastDataPoint - prevClose) / prevClose) * 100).toFixed(2);
+    header = symbol + " - $" + lastDataPoint;
+
+  }
   
   const handleDelete = () => {
     setStocks(stocks.filter(stock => stock !== sym))

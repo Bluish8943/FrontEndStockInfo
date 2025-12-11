@@ -2,18 +2,7 @@ import React from "react";
 import Chart from "react-apexcharts";
 
 const LineChart = ({ chartData, symbol }) => {
-  if (!Array.isArray(chartData) || chartData.length === 0) return null;
-
-  const series = [
-    {
-      name: "Closing Price",
-      data: chartData.map(item => ({
-        x: new Date(item.time),
-        y: item.close
-      }))
-    }
-  ];
-
+  
   const options = {
     chart: {
       type: "line",
@@ -40,6 +29,7 @@ const LineChart = ({ chartData, symbol }) => {
             style: {
                     colors: "#FFFFFF"
             },
+            datetimeUTC: false,
             datetimeFormatter: {
               hour: 'hh:mm TT',
               minute: 'hh:mm TT'
@@ -59,9 +49,31 @@ const LineChart = ({ chartData, symbol }) => {
     tooltip: {
       shared: true,
       theme: "dark"
+    },
+    noData: {
+      text: "No Live Data Available - Market opens at 8:30 cst",
+      style: { color: "#FFFFFF" }
     }
   };
-
+  if (!Array.isArray(chartData) || chartData.length === 0) {
+    return (
+      <Chart
+        options={options}
+        series={[{ name: "Closing Price", data: [] }]}
+        type="line"
+        height={350}
+      />
+    );
+  }
+  const series = [
+    {
+      name: "Closing Price",
+      data: chartData.map(item => ({
+        x: item.time,
+        y: item.close
+      }))
+    }
+  ];
   return <Chart options={options} series={series} type="line" height={350} />;
 };
 

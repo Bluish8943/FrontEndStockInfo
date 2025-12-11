@@ -41,6 +41,7 @@ const AlphaCandlestickChart = ({ chartData, symbol }) => {
             style: {
                 colors: "#FFFFFF"
             },
+            datetimeUTC: false,
             datetimeFormatter: {
               hour: 'hh:mm TT',
               minute: 'hh:mm TT'
@@ -64,6 +65,10 @@ const AlphaCandlestickChart = ({ chartData, symbol }) => {
     tooltip: {
       shared: true,
       theme: "dark"
+    },
+    noData: {
+      text: "No Live Data Available - Market opens at 8:30 cst",
+      style: { color: "#FFFFFF" }
     }
   };
 
